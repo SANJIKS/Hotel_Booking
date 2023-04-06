@@ -10,6 +10,7 @@ from rest_framework.decorators import action
 from django.db.models import Avg, Count
 from django.conf import settings
 from django.core.mail import send_mail
+from django.views.decorators.cache import cache_page
 
 from hotels.models import Booking, Favorite, Hotel, Like, Review, Room
 from hotels.permissions import IsAuthor, IsOwner, IsOwnerAndAuthor, IsHisHotel
@@ -37,9 +38,6 @@ class HotelViewSet(ModelViewSet):
         
 
     def get_serializer_context(self):
-        """  
-        Метод для добавления дополнительных данных в сериалайзеры
-        """
         context = super().get_serializer_context()
         context.update({'request': self.request})
         return context
