@@ -1,6 +1,7 @@
 from rest_framework import serializers
+from django.db.models import Avg
 
-from hotels.models import Booking, Hotel, Room
+from hotels.models import Booking, Hotel, HotelRating, Room
 
 
 class HotelListSerializer(serializers.ListSerializer):
@@ -21,6 +22,12 @@ class HotelSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['owner'] = self.context['request'].user
         return super().create(validated_data)
+    
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['rating'] = instance.ratings.aggregate(Avg('rate'))['rate__avg']
+        return representation
     
 
 
@@ -52,4 +59,23 @@ class BookingSerializer(serializers.ModelSerializer):
         fields = ('id', 'user', 'check_in', 'check_out', 'guests', 'room')
         read_only_fields = ['id', 'user', 'room']
 
-    
+
+
+class RatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HotelRating
+        fields = ('id', 'user', 'hotel', 'rate')
+        read_only_fields = ['user', 'hotel']
+
+
+    def validate(self, attrs):
+        user = self.context.get('request').user
+        hotel = self.context.get('hotel')
+        rate = HotelRating.objects.filter(user=user, hotel=hotel).exists()
+        if rate:
+            raise serializers.ValidationError({'message': 'Rate already exists'})
+        return super().validate(attrs)
+
+    def create(self, validated_data):
+        validated_data['user'] = self.context.get('request').user
+        return super().create(validated_data)

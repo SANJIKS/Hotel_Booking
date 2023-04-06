@@ -66,3 +66,26 @@ class Booking(models.Model):
 
     def __str__(self):
         return f"{self.user.email} - {self.room.hotel.name} - Room {self.room.room_number}"
+
+
+
+class HotelRating(models.Model):
+    RATES = (
+        (1, '1'),
+        (2, '2'),
+        (3, '3'),
+        (4, '4'),
+        (5, '5'),
+    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='hotel_ratings')
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='ratings')
+    rate = models.PositiveSmallIntegerField(choices=RATES)
+
+    def __str__(self):
+        return str(self.rate)
+
+    class Meta:
+        verbose_name = 'Рейтинг отеля'
+        verbose_name_plural = 'Рейтинги отелей'
+        unique_together = ['user', 'hotel']

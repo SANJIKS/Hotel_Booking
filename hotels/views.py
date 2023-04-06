@@ -6,10 +6,13 @@ from rest_framework.exceptions import ValidationError, PermissionDenied
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
+from django.db.models import Avg, Count
+
 
 from hotels.models import Booking, Hotel, Room
 from hotels.permissions import IsOwner, IsOwnerAndAuthor, IsHisHotel
-from hotels.serializers import BookingSerializer, HotelSerializer, RoomSerializer
+from hotels.serializers import BookingSerializer, HotelSerializer, RatingSerializer, RoomSerializer
 # Create your views here.
 
 
@@ -30,12 +33,36 @@ class HotelViewSet(ModelViewSet):
         return super().get_permissions()
     
 
+    def get_serializer_context(self):
+        """  
+        Метод для добавления дополнительных данных в сериалайзеры
+        """
+        context = super().get_serializer_context()
+        context.update({'request': self.request})
+        return context
+    
+
+    def get_serializer_class(self):
+        if self.action == 'rate_hotel':
+            return RatingSerializer
+        return super().get_serializer_class()
+    
+
+    @action(methods=['POST'], detail=True, url_path='rate')
+    def rate_hotel(self, request, pk=None) -> Response:
+        hotel = self.get_object()
+        serializer = RatingSerializer(data=request.data, context={'request': request, 'hotel': hotel})
+        serializer.is_valid(raise_exception=True)
+        serializer.save(hotel=hotel)
+        return Response(serializer.data)
+    
+
 
 class TopHotelsAPIView(generics.ListAPIView):
     serializer_class = HotelSerializer
 
     def get_queryset(self):
-        return Hotel.objects.order_by('-bookings_count')[:5]
+        return Hotel.objects.annotate(num_bookings=Count('bookings_count'), avg_rating=Avg('ratings__rate')).order_by('-num_bookings', '-avg_rating')[:5]
     
     
 
