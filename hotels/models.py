@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
-# Create your models here.
+
 
 class Hotel(models.Model):
     name = models.CharField(max_length=100)
@@ -11,7 +11,8 @@ class Hotel(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.TextField()
     stars = models.CharField(choices=(('1', '1 звезда'), ('2', '2 звезды'), ('3', '3 звезды'), ('4', '4 звезды'), ('5', '5 звезд')))
-    
+    bookings_count = models.PositiveIntegerField(default=0, verbose_name='количество бронирований')
+
     def __str__(self):
         return self.name
 

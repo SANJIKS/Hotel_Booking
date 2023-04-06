@@ -31,6 +31,15 @@ class HotelViewSet(ModelViewSet):
     
 
 
+class TopHotelsAPIView(generics.ListAPIView):
+    serializer_class = HotelSerializer
+
+    def get_queryset(self):
+        return Hotel.objects.order_by('-bookings_count')[:5]
+    
+    
+
+
 
 class RoomViewSet(ModelViewSet):
     queryset = Room.objects.all()
@@ -52,6 +61,7 @@ class BookingCreateAPIView(generics.CreateAPIView):
         room_id = kwargs.get('room_id')
         try:
             room = Room.objects.get(id=room_id)
+            hotel = room.hotel
         except Room.DoesNotExist:
             return Response({'message': 'Комната не найдена'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -75,8 +85,13 @@ class BookingCreateAPIView(generics.CreateAPIView):
         booking.save()
         room.status = 'Booked'
         room.save()
+        hotel.bookings_count += 1 
+        hotel.save()
 
         return Response({'message': 'Бронирование создано'}, status=status.HTTP_201_CREATED)
+
+
+
 
 
 class BookingListAPIView(generics.ListAPIView):
