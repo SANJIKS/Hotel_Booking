@@ -89,3 +89,49 @@ class HotelRating(models.Model):
         verbose_name = 'Рейтинг отеля'
         verbose_name_plural = 'Рейтинги отелей'
         unique_together = ['user', 'hotel']
+
+
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes')
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='likes')
+
+    class Meta:
+        verbose_name = 'Лайк'
+        verbose_name_plural = 'Лайки'
+        unique_together = ('user', 'hotel')
+
+    
+    def __str__(self):
+        return f'Liked by {self.user.email}'
+    
+
+    
+class Favorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorites')
+    hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='favorites')
+
+    class Meta:
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранные'
+        unique_together = ('user', 'hotel')
+
+    def __str__(self):
+        return f'{self.hotel.name} Added to favorites by {self.user.email}'
+    
+
+class Review(models.Model):
+    hotel =  models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
+    author = models.CharField(max_length=200)
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+    
+    def __str__(self) -> str:
+        return f'Отзыв от {self.user.email}'
+    
+

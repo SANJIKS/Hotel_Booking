@@ -1,7 +1,16 @@
 from rest_framework import serializers
 from django.db.models import Avg
 
-from hotels.models import Booking, Hotel, HotelRating, Room
+from hotels.models import Booking, Favorite, Hotel, HotelRating, Like, Review, Room
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.email')
+
+    
+    class Meta:
+        model = Like
+        fields = ('user',)
 
 
 class HotelListSerializer(serializers.ListSerializer):
@@ -10,14 +19,22 @@ class HotelListSerializer(serializers.ListSerializer):
         fields = ('id', 'name', 'stars', 'address', 'description', 'image')
 
 
+
 class HotelSerializer(serializers.ModelSerializer):
+    likes = serializers.SerializerMethodField(method_name='get_likes_count')
     image = serializers.ImageField(max_length=None, use_url=True)
     
+
     class Meta:
         model = Hotel
         fields = '__all__'
         read_only_fields = ['owner', 'id']
         list_serializer_class = HotelListSerializer
+
+
+    def get_likes_count(self, instance) -> int:
+        return Like.objects.filter(hotel=instance).count()
+    
 
     def create(self, validated_data):
         validated_data['owner'] = self.context['request'].user
@@ -26,7 +43,9 @@ class HotelSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
+        representation['liked_users'] = LikeSerializer(instance.likes.all(), many=True).data
         representation['rating'] = instance.ratings.aggregate(Avg('rate'))['rate__avg']
+        representation['reviews'] = ReviewSerializer(instance.reviews.all(), many=True).data
         return representation
     
 
@@ -79,3 +98,21 @@ class RatingSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['user'] = self.context.get('request').user
         return super().create(validated_data)
+    
+
+class FavoriteSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.email')
+
+    class Meta:
+        model = Favorite
+        fields = ('user', 'hotel')
+
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True, default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Review
+        fields = ('id', 'user', 'hotel', 'text', 'created_at', 'updated_at')
+        read_only_fields = ['hotel']
