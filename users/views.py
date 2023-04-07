@@ -1,8 +1,8 @@
 from rest_framework import generics, permissions
-from rest_framework.generics import CreateAPIView # https://www.django-rest-framework.org/api-guide/generic-views/
+from rest_framework.generics import CreateAPIView 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.request import Request # https://www.django-rest-framework.org/api-guide/requests/
+from rest_framework.request import Request 
 from .models import OwnerRequest
 from .serializers import OwnerRequestSerializer
 from rest_framework.views import APIView
@@ -10,8 +10,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from .serializers import ChangePasswordSerializer, RegistrationSerializer, ActivationSerializer, LoginSerializer
 from django.contrib.auth import get_user_model
-from rest_framework import generics, status
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, generics
 from rest_framework.authentication import TokenAuthentication
 
 
@@ -78,10 +77,6 @@ class ChangePasswordView(generics.UpdateAPIView):
             return Response(response)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-
-
-
 
 
 class OwnerRequestCreateAPIView(generics.CreateAPIView):

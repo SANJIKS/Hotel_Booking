@@ -10,6 +10,6 @@ urlpatterns = [
     path('login/', LoginView.as_view()),
     path('logout/', LogoutView.as_view()),
     path('change_password/', ChangePasswordView.as_view()),
-    path('owner/', OwnerRequestCreateAPIView.as_view()),
+    path('owner/', OwnerRequestCreateAPIView.as_view(), name='owner-create'),
     path('api/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset'))
 ]

@@ -13,6 +13,7 @@ class Hotel(models.Model):
     stars = models.CharField(choices=(('1', '1 звезда'), ('2', '2 звезды'), ('3', '3 звезды'), ('4', '4 звезды'), ('5', '5 звезд')))
     bookings_count = models.PositiveIntegerField(default=0, verbose_name='количество бронирований')
 
+
     def __str__(self):
         return self.name
 
