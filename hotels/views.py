@@ -128,6 +128,8 @@ class RoomViewSet(ModelViewSet):
         if self.request.method in ['PUT', 'PATCH', 'DELETE']:
             self.permission_classes = [IsHisHotel]
         return super().get_permissions()
+
+
     
 
 class BookingCreateAPIView(generics.CreateAPIView):
@@ -175,8 +177,7 @@ class BookingCreateAPIView(generics.CreateAPIView):
 
         return Response({'message': 'Бронирование создано'}, status=status.HTTP_201_CREATED)
 
-
-
+    
 
 
 class BookingListAPIView(generics.ListAPIView):
