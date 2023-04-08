@@ -23,12 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = 'django-insecure-#*g9oj_8n*p5dp@3&3^r9hdi48!cls9ni4v-q7^gg*wl7c^kmn'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG')
+DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -161,10 +161,10 @@ AUTH_USER_MODEL = 'users.User'
 
 # Email sending settings
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = config('EMAIL_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD')
-EMAIL_PORT = config('EMAIL_PORT')
-EMAIL_USE_TLS = config('USE_TLS', cast=bool)
+EMAIL_HOST_USER = 'memka47@gmail.com'
+EMAIL_HOST_PASSWORD = 'tmonlbcoqevylebh'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 
@@ -178,7 +178,7 @@ REST_FRAMEWORK = {
 }
 
 
-SWAGGER_SETTINGS = { # настройки сваггера
+SWAGGER_SETTINGS = { 
    'SECURITY_DEFINITIONS': {
       'Token': {
             'type': 'apiKey',
