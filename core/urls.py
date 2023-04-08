@@ -26,7 +26,7 @@ schema_view = get_schema_view(
    openapi.Info(
       title="Hotel Booking",
       default_version='v1',
-      description="API for Booking",
+      description="API for Booking\nThis is our team hackathon, we tried very hard, so please rate it. Sanjar, Iran, Erbol",
       terms_of_service="https://www.google.com/policies/terms/",
       contact=openapi.Contact(email="contact@snippets.local"),
       license=openapi.License(name="BSD License"),
