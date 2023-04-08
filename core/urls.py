@@ -20,6 +20,7 @@ from drf_yasg import openapi
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter 
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -43,3 +44,5 @@ urlpatterns = [
     path('account/', include('users.urls')),
     path('', include('hotels.urls'))
 ]
+
+urlpatterns += staticfiles_urlpatterns()
