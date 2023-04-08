@@ -16,7 +16,7 @@ from hotels.models import Booking, Favorite, Hotel, Like, Review, Room
 from hotels.permissions import IsAuthor, IsOwner, IsOwnerAndAuthor, IsHisHotel
 from hotels.serializers import BookingSerializer, FavoriteSerializer, HotelSerializer, LikeSerializer, RatingSerializer, ReviewSerializer, RoomSerializer
 
-from .tasks import send_booking_confirmation_email
+# from .tasks import send_booking_confirmation_email
 # Create your views here.
 
 
