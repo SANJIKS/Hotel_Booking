@@ -171,13 +171,13 @@ class BookingCreateAPIView(generics.CreateAPIView):
         hotel.save()
         print(room.price_per_night * (check_out - check_in).days)
 
-        # subject = 'Ваша комната забронирована'
-        # message = f'Здравствуйте, вы успешно забронировали комнату {room.room_number} отеля {hotel.name}, с {check_in} по {check_out}. Сумма оплаты: {room.price_per_night * (check_out - check_in).days} сом. Спасибо что выбрали наш сервис!'
-        # from_email = settings.EMAIL_HOST_USER
-        # recipient_list = [self.request.user.email]
-        # send_mail(subject, message, from_email, recipient_list)
+        subject = 'Ваша комната забронирована'
+        message = f'Здравствуйте, вы успешно забронировали комнату {room.room_number} отеля {hotel.name}, с {check_in} по {check_out}. Сумма оплаты: {room.price_per_night * (check_out - check_in).days} сом. Спасибо что выбрали наш сервис!'
+        from_email = settings.EMAIL_HOST_USER
+        recipient_list = [self.request.user.email]
+        send_mail(subject, message, from_email, recipient_list)
 
-        send_booking_confirmation_email.delay(self.request.user.email, hotel.name, room.room_number, check_in, check_out, room.price_per_night * (check_out - check_in).days)
+        # send_booking_confirmation_email.delay(self.request.user.email, hotel.name, room.room_number, check_in, check_out, room.price_per_night * (check_out - check_in).days)
 
 
         return Response({'message': 'Бронирование создано'}, status=status.HTTP_201_CREATED)

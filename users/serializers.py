@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model, authenticate
 
 from users.models import OwnerRequest
 from .utils import create_activation_code
-from .tasks import send_activation_code
+from .utils import send_activation_code
 
 User = get_user_model()
 
@@ -33,7 +33,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
     def create(self, validated_data: dict):
         user = User.objects.create_user(**validated_data)
         create_activation_code(user)
-        send_activation_code.delay(user.id)
+        send_activation_code(user)
         return user
 
 
