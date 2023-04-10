@@ -26,7 +26,7 @@ class HotelViewSet(ModelViewSet):
     serializer_class = HotelSerializer
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     filterset_fields = ['stars']
-    search_fields = ['title', 'description']
+    search_fields = ['name', 'description']
 
 
     def get_permissions(self):
@@ -66,9 +66,11 @@ class HotelViewSet(ModelViewSet):
             serializer.save(user=request.user, hotel=hotel)
             return Response(serializer.data)
         if request.method == 'DELETE':
-            review = get_object_or_404(hotel.reviews, pk=pk)
+            review = get_object_or_404(Review.objects.filter(id=pk))
+            if request.user != review.user:
+                return Response({'error': 'Нельзя удалить чужой отзыв'}, status=403)
             review.delete()
-            return Response({'message': 'Ваш коммент удален'})
+            return Response({'message': 'Ваш отзыв удален'})
 
     
 
